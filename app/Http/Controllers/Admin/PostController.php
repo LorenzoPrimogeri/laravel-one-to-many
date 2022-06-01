@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Post;
+use App\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
@@ -28,7 +29,8 @@ class PostController extends Controller
      */
     public function create()
     {
-        return view('admin.posts.create');
+        $categories = Category::all();
+        return view('admin.posts.create', compact('categories'));
     }
 
     /**
@@ -39,11 +41,23 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'title' => 'required|max:250',
-            'content' => 'required',
+        $request->validate(
+            [
+                'title' => 'required|max:250',
+                'content' => 'required|min:10|max:250',
+                'category_id' => 'nullable|exists:categories,id',
 
-        ]);
+            ],
+            [
+                'title.required' => 'Inserire il titolo',
+                'title.max' => 'hai superato i :attribute caratteri',
+                'content.required' => 'Inserire il contenuto del post',
+                'content.max' => 'hai superato i :attribute caratteri',
+                'content.min' => 'devi almeno inserire :attribute caratteri',
+                'category_id.exists' => 'la categoria non esiste '
+
+            ]
+        );
         $post = $request->all();
         $newPost = new Post();
         $newPost->fill($post);
@@ -70,8 +84,9 @@ class PostController extends Controller
     public function show($id)
     {
         $post = Post::find($id);
+        $category = Category::find($post->category_id);
 
-        return view('admin.posts.show', compact('post'));
+        return view('admin.posts.show', compact('post', 'category'));
     }
 
     /**
@@ -83,8 +98,9 @@ class PostController extends Controller
     public function edit($id)
     {
         $post = Post::find($id);
+        $categories = Category::all();
 
-        return view('admin.posts.edit', compact('post'));
+        return view('admin.posts.edit', compact('post', 'categories'));
     }
 
     /**
@@ -96,6 +112,24 @@ class PostController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $request->validate(
+            [
+                'title' => 'required|max:250',
+                'content' => 'required|min:10|max:250',
+                'category_id' => 'nullable|exists:categories,id',
+
+            ],
+            [
+                'title.required' => 'Inserire il titolo',
+                'title.max' => 'hai superato i :attribute caratteri',
+                'content.required' => 'Inserire il contenuto del post',
+                'content.max' => 'hai superato i :attribute caratteri',
+                'content.min' => 'devi almeno inserire :attribute caratteri',
+                'category_id.exists' => 'la categoria non esiste '
+
+            ]
+        );
+
         $post = new Post();
         $post = Post::findOrFail($id);
         $data = $request->all();

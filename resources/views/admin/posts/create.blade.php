@@ -35,9 +35,24 @@
                     value="{{old('title')}}" required>
             </div>
             <div class="col-12">
-                <h5 class="pt-2">Contenuto</h5>
+                <h5 class="pt-2">Categoria</h5>
             </div>
             <div class="col-12">
+                <select name="category_id">
+                    <option value="">Scegli categoria</option>
+                    @foreach ($categories as $category)
+                    <option value="{{$category->id}}" {{$category->id == old('category_id')?'selected':''}}
+                        >{{$category->name}}</option>
+                    @endforeach
+                </select>
+                @error('category_id')
+                <div class="d-block invalid-feedback">{{$message}}</div>
+                @enderror
+            </div>
+            <div class="col-12">
+                <h5 class="pt-2">Contenuto</h5>
+            </div>
+            <div class="co l-12">
                 <textarea name="content" class="w-100" rows="10" placeholder="Inserisci il contenuto"></textarea>
             </div>
             <div class="col-12">

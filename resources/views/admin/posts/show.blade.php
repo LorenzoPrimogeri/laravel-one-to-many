@@ -32,6 +32,12 @@
             <p class="w-100 p-1"> {{$post->title}} </p>
         </div>
         <div class="col-12">
+            <h5 class="pt-2">Category</h5>
+        </div>
+        <div class="col-12">
+            <p class="w-100 p-1"> {{$category->name}} </p>
+        </div>
+        <div class="col-12">
             <h5 class="pt-2">Contenuto</h5>
         </div>
         <div class="col-12">
